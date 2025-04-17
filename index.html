@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cuban Marketplace</title>
+  <title>Catálogo de Productos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,15 +62,15 @@
 </head>
 <body>
   <header>
-    <h1>Cuban Marketplace</h1>
+    <h1>Catálogo de Productos</h1>
   </header>
 
   <div id="productos"></div>
 
   <script>
     const apiKey = "AIzaSyC6AQIpxmYnd2JolEErFxfEha6oHdfsfOE";
-    const spreadsheetId = "1TInLp5keZSAIhWqbCWG6zTBhAJ6n9jvLmZ6e92l-Q_I";
-    const range = "excel_data1!A2:L";
+    const spreadsheetId = "1RjANLHYZ86S9wRuwUImVPPMT9v_hK7F1VmB80wgCzHs";
+    const range = "formulario_a22h!A2:L";
 
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`)
       .then(response => response.json())
@@ -84,12 +84,13 @@
         }
 
         rows.forEach(row => {
-          const imagen = row[4] || "https://via.placeholder.com/250";
-          const sku = row[5] || "";
-          const nombre = row[6] || "Producto sin nombre";
-          const precio = row[11] || "N/D";
+          const sku = row[0]?.trim();
+          const nombre = row[1]?.trim();
+          const precio = row[2]?.trim();
+          const imagen = row[3]?.trim() || "https://via.placeholder.com/250";
 
-          if (!nombre.trim()) return;
+          // Solo mostrar si hay SKU, nombre y precio
+          if (!sku || !nombre || !precio) return;
 
           const productoHTML = `
             <div class="product">
@@ -100,13 +101,12 @@
               <a class="select-button" href="formulario-a2.html?sku=${encodeURIComponent(sku)}">Seleccionar</a>
             </div>
           `;
-
           container.innerHTML += productoHTML;
         });
       })
       .catch(error => {
         document.getElementById("productos").innerHTML = "<p>Error al cargar los productos.</p>";
-        console.error("Error:", error);
+        console.error("❌ Error al obtener los datos:", error);
       });
   </script>
 </body>
