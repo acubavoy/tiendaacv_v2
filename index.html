@@ -1,113 +1,102 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cuban Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo de Productos - TiendaACV</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #ffe6f0;
+      background-color: #f3f3f3;
       margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #ff99cc;
       padding: 20px;
-      text-align: center;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.8em;
-      color: white;
-    }
-    .product {
-      background-color: white;
-      margin: 10px;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .product h2 {
-      margin-top: 0;
-      font-size: 1.2em;
-      text-align: center;
-    }
-    .price {
-      color: red;
-      font-size: 1.1em;
-      font-weight: bold;
-    }
-    .product img {
-      width: 100%;
-      max-width: 250px;
-      height: auto;
+
+    .producto {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
       border-radius: 8px;
-      margin-top: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+
+    .producto img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+
+    .producto h3 {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    .producto p {
+      margin: 5px 0;
+    }
+
     .select-button {
       display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
+      margin-top: 10px;
+      padding: 10px 15px;
       background-color: #007bff;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      font-size: 1em;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .select-button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Cuban Marketplace</h1>
-  </header>
-
-  <div id="productos"></div>
+  <h1>Catálogo de Productos</h1>
+  <div id="catalogo"></div>
 
   <script>
-    const apiKey = "AIzaSyC6AQIpxmYnd2JolEErFxfEha6oHdfsfOE";
-    const spreadsheetId = "1TInLp5keZSAIhWqbCWG6zTBhAJ6n9jvLmZ6e92l-Q_I";
-    const range = "excel_data1!A2:L";
+    const productos = [
+      {
+        sku: "3AAA08",
+        nombre: "Televisor Insignia Smart TV - 32 Fire HD Serie F20",
+        precio: "193.37",
+        imagen: "https://i.imgur.com/3BiHXGw.jpeg"
+      },
+      {
+        sku: "3BBB12",
+        nombre: "Ventilador Recargable INNOPWER con Panel Solar",
+        precio: "95.89",
+        imagen: "https://i.imgur.com/HkmKRIG.jpeg"
+      }
+    ];
 
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`)
-      .then(response => response.json())
-      .then(data => {
-        const rows = data.values;
-        const container = document.getElementById("productos");
+    const catalogo = document.getElementById("catalogo");
 
-        if (!rows || rows.length === 0) {
-          container.innerHTML = "<p>No se encontraron productos.</p>";
-          return;
-        }
+    productos.forEach(producto => {
+      const div = document.createElement("div");
+      div.className = "producto";
+      div.innerHTML = `
+        <img src="${producto.imagen}" alt="${producto.nombre}">
+        <h3>${producto.nombre}</h3>
+        <p><strong>SKU:</strong> ${producto.sku}</p>
+        <p><strong>Precio:</strong> $${producto.precio}</p>
+        <a class="select-button" href="#" onclick="seleccionarProducto('${producto.sku}', '${producto.nombre}', '${producto.precio}')">Seleccionar</a>
+      `;
+      catalogo.appendChild(div);
+    });
 
-        rows.forEach(row => {
-          const imagen = row[4] || "https://via.placeholder.com/250";
-          const sku = row[5] || "";
-          const nombre = row[6] || "Producto sin nombre";
-          const precio = row[11] || "N/D";
-
-          if (!nombre.trim()) return;
-
-          const productoHTML = `
-            <div class="product">
-              <h2>${nombre}</h2>
-              <p><strong>SKU:</strong> ${sku}</p>
-              <p class="price">Precio de Venta: $${precio}</p>
-              <img src="${imagen}" alt="Imagen del producto">
-              <a class="select-button" href="formulario-a2.html?sku=${encodeURIComponent(sku)}">Seleccionar</a>
-            </div>
-          `;
-
-          container.innerHTML += productoHTML;
-        });
-      })
-      .catch(error => {
-        document.getElementById("productos").innerHTML = "<p>Error al cargar los productos.</p>";
-        console.error("Error:", error);
-      });
+    function seleccionarProducto(sku, nombre, precio) {
+      const productosSeleccionados = JSON.parse(localStorage.getItem("productosSeleccionados")) || [];
+      productosSeleccionados.push({ sku, nombre, precio });
+      localStorage.setItem("productosSeleccionados", JSON.stringify(productosSeleccionados));
+      alert("Producto agregado. Puede seleccionar más productos o ir al formulario.");
+    }
   </script>
+
+  <p style="text-align:center; margin-top:30px;">
+    <a class="select-button" href="formulario-a2.html">Ir al Formulario</a>
+  </p>
 </body>
 </html>
