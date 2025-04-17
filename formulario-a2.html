@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulario de Pedido</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #ffe6f0; /* Rosado claro brillante */
+    }
+    h1, h2 {
+      color: #d63384;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      color: #333;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #d63384;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c82373;
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulario de Pedido</h1>
+  <form id="formularioPedido">
+    <!-- Información del Comprador -->
+    <h2>Comprador</h2>
+    <label>Nombre: <input name="comprador_nombre" required></label>
+    <label>Apellidos: <input name="comprador_apellidos" required></label>
+    <label>Email: <input name="comprador_email" type="email" required></label>
+    <label>Teléfono: <input name="comprador_telefono" required></label>
+    <label>Código Postal: <input name="comprador_codigo_postal" required></label>
+    <label>ID/Licencia/Pasaporte: <input name="comprador_id" required></label>
+
+    <!-- Información del Receptor -->
+    <h2>Receptor</h2>
+    <label>Nombre: <input name="receptor_nombre" required></label>
+    <label>Apellidos: <input name="receptor_apellidos" required></label>
+    <label>Teléfono: <input name="receptor_telefono" required></label>
+    <label>Carnet de Identidad: <input name="receptor_carnet" required></label>
+    <label>¿Puede ser contactado por WhatsApp? 
+      <select name="receptor_whatsapp">
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </label>
+    <label>Nombre de la Calle: <input name="nombre_calle_del_receptor" required></label>
+    <label>Número de la Calle: <input name="receptor_calle" required></label>
+    <label>Entrecalles: <input name="receptor_entrecalles"></label>
+    <label>Reparto: <input name="receptor_reparto"></label>
+    <label>Pueblo o Ciudad: <input name="receptor_ciudad" required></label>
+    <label>Provincia: <input name="receptor_provincia" required></label>
+    <label>País: <input name="receptor_pais" required></label>
+
+    <!-- Forma de Pago -->
+    <h2>Forma de Pago</h2>
+    <label><input type="radio" name="forma_pago" value="Pago Cash" required> Pago Cash</label>
+    <label><input type="radio" name="forma_pago" value="Deposito bancario"> Depósito bancario</label>
+    <label><input type="radio" name="forma_pago" value="Pago por Zelle"> Pago por Zelle</label>
+    <label style="opacity: 0.4"><input type="radio" disabled> Pago por Tarjeta de Crédito (No disponible)</label>
+    <label style="opacity: 0.4"><input type="radio" disabled> Pago por PayPal (No disponible)</label>
+
+    <!-- Botón -->
+    <button type="submit">Enviar Pedido</button>
+  </form>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzg83NHD_WEzCTi74_wMsYFnwydbNxEzCgTNSshir7gqoeY_Lh86pUujn1fFazKDHBH/exec';
+
+    document.getElementById("formularioPedido").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = "agradecimiento.html";
+          } else {
+            alert("Error al enviar el pedido. Intente nuevamente.");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("Error al enviar el pedido.");
+        });
+    });
+  </script>
+</body>
+</html>
